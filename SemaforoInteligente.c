@@ -41,9 +41,9 @@
 #define COR_DESLIGADO  0, 0, 0
 
 // Tempos em milissegundos
-#define TEMPO_VERDE        15000        // 10 segundos para luz verde
+#define TEMPO_VERDE        15000        // 15 segundos para luz verde
 #define TEMPO_AMARELO      5000         // 5 segundos para luz amarela
-#define TEMPO_VERMELHO     15000        // 10 segundos para luz vermelha
+#define TEMPO_VERMELHO     15000        // 15 segundos para luz vermelha
 #define TEMPO_BEEP         500          // Duração do beep
 #define TEMPO_PISCA        2000         // Tempo de pisca no modo noturno
 #define TEMPO_AVISO        3000         // Tempo de aviso antes da troca (3 segundos)
