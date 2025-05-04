@@ -41,13 +41,13 @@
 #define COR_DESLIGADO  0, 0, 0
 
 // Tempos em milissegundos
-#define TEMPO_VERDE    15000  // 10 segundos para luz verde
-#define TEMPO_AMARELO  5000   // 5 segundos para luz amarela
-#define TEMPO_VERMELHO 15000  // 10 segundos para luz vermelha
-#define TEMPO_BEEP     500    // Duração do beep
-#define TEMPO_PISCA    2000   // Tempo de pisca no modo noturno
-#define TEMPO_AVISO    3000   // Tempo de aviso antes da troca (3 segundos)
-#define TEMPO_PISCA_RAPIDO 100 // Tempo de pisca rápido para o LED RGB (100ms)
+#define TEMPO_VERDE        15000        // 10 segundos para luz verde
+#define TEMPO_AMARELO      5000         // 5 segundos para luz amarela
+#define TEMPO_VERMELHO     15000        // 10 segundos para luz vermelha
+#define TEMPO_BEEP         500          // Duração do beep
+#define TEMPO_PISCA        2000         // Tempo de pisca no modo noturno
+#define TEMPO_AVISO        3000         // Tempo de aviso antes da troca (3 segundos)
+#define TEMPO_PISCA_RAPIDO 100          // Tempo de pisca rápido para o LED RGB (100ms)
 
 // Estados do semáforo
 #define ESTADO_VERDE    0
@@ -55,13 +55,13 @@
 #define ESTADO_VERMELHO 2
 
 // Variáveis globais compartilhadas
-volatile bool modo_noturno = false;  // Flag para controle do modo
-volatile int estado_semaforo = 0;    // 0=verde, 1=amarelo, 2=vermelho
-volatile bool led_aceso = false;     // Flag para sincronizar LED e buzzer no modo noturno
-volatile uint32_t tempo_atual = 0;   // Tempo atual do estado do semáforo
-volatile uint32_t tempo_estado = 0;  // Tempo total do estado atual
-volatile uint32_t timestamp_modo_noturno = 0;  // Timestamp para sincronização no modo noturno
-volatile bool aviso_troca = false;   // Flag para indicar que está próximo da troca de estado
+volatile bool modo_noturno = false;             // Flag para controle do modo
+volatile int estado_semaforo = 0;               // 0=verde, 1=amarelo, 2=vermelho
+volatile bool led_aceso = false;                // Flag para sincronizar LED e buzzer no modo noturno
+volatile uint32_t tempo_atual = 0;              // Tempo atual do estado do semáforo
+volatile uint32_t tempo_estado = 0;             // Tempo total do estado atual
+volatile uint32_t timestamp_modo_noturno = 0;   // Timestamp para sincronização no modo noturno
+volatile bool aviso_troca = false;              // Flag para indicar que está próximo da troca de estado
 
 // Variáveis para o PIO da matriz de LEDs
 PIO pio = pio0;
@@ -96,17 +96,11 @@ void gpio_irq_handler(uint gpio, uint32_t events) {
 
 // Inicialização do hardware
 void init_hardware() {
-    // Inicializa o buzzer
-    init_buzzer();
     
-    // Inicializa a matriz de LEDs
-    init_matriz_leds();
-    
-    // Inicializa o display
-    init_display();
-    
-    // Inicializa o LED RGB
-    init_led_rgb();
+    init_buzzer();          // Inicializa o buzzer
+    init_matriz_leds();     // Inicializa a matriz de LEDs
+    init_display();         // Inicializa o display
+    init_led_rgb();         // Inicializa o LED RGB
     
     // Configura o botão A
     gpio_init(BOTAO_A);
@@ -134,8 +128,7 @@ void init_matriz_leds() {
     uint offset = pio_add_program(pio, &ws2812_program);
     ws2812_program_init(pio, sm, offset, WS2812_PIN, 800000, false);
     
-    // Limpa a matriz
-    display_matriz(0, 0, 0);
+    display_matriz(0, 0, 0); // Limpa a matriz
 }
 
 // Inicializa o display OLED
@@ -215,10 +208,9 @@ void vSemaforoControleTask(void *pvParameters) {
     uint32_t ultimo_tick_modo_noturno = 0;
     
     while (true) {
-        if (modo_noturno) {
-            // Modo noturno: pisca amarelo lentamente
+        if (modo_noturno) {                     // Modo noturno: pisca amarelo lentamente
             estado_semaforo = ESTADO_AMARELO;
-            aviso_troca = false;  // Não há aviso de troca no modo noturno
+            aviso_troca = false;                // Não há aviso de troca no modo noturno
             
             // Calcula o tempo decorrido desde o último ciclo
             uint32_t tick_atual = xTaskGetTickCount();
@@ -428,7 +420,6 @@ void vBuzzerTask(void *pvParameters) {
 }
 
 // Tarefa para controle do LED RGB
-// Tarefa para controle do LED RGB
 void vLedRgbTask(void *pvParameters) {
     bool led_rgb_estado = false;  // Estado do LED RGB (ligado/desligado)
     
@@ -509,15 +500,13 @@ int main() {
     stdio_init_all();
     init_hardware();
     
-    printf("Iniciando sistema de semáforo inteligente\n");
-    
     // Criação das tarefas
     xTaskCreate(
         vSemaforoControleTask,
         "Controle Semaforo",
         configMINIMAL_STACK_SIZE,
         NULL,
-        tskIDLE_PRIORITY + 3,  // Prioridade alta para controle geral
+        tskIDLE_PRIORITY + 3,
         NULL
     );
     
@@ -562,7 +551,7 @@ int main() {
         "Botoes",
         configMINIMAL_STACK_SIZE,
         NULL,
-        tskIDLE_PRIORITY + 2,  // Prioridade alta para responder rapidamente
+        tskIDLE_PRIORITY + 2,
         NULL
     );
     
