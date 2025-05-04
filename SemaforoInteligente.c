@@ -76,7 +76,6 @@ void init_led_rgb();
 uint32_t urgb_u32(uint8_t r, uint8_t g, uint8_t b);
 void put_pixel(uint32_t pixel_grb);
 void display_matriz(uint8_t r, uint8_t g, uint8_t b);
-void play_sound(int frequencia, int duracao_ms);
 void led_rgb_controller(bool r, bool g, bool b);
 
 // Tarefas FreeRTOS
@@ -181,25 +180,6 @@ void display_matriz(uint8_t r, uint8_t g, uint8_t b) {
     for (int i = 0; i < NUM_PIXELS; i++) {
         put_pixel(color);
     }
-}
-
-// Toca um som no buzzer
-void play_sound(int frequencia, int duracao_ms) {
-    uint slice_num = pwm_gpio_to_slice_num(BUZZER_PIN);
-    
-    if (frequencia <= 0) {
-        pwm_set_gpio_level(BUZZER_PIN, 0);
-        vTaskDelay(pdMS_TO_TICKS(duracao_ms));
-        return;
-    }
-    
-    float divider = 20.0f;
-    pwm_set_clkdiv(slice_num, divider);
-    uint16_t wrap = (125000000 / (frequencia * divider)) - 1;
-    pwm_set_wrap(slice_num, wrap);
-    pwm_set_gpio_level(BUZZER_PIN, wrap / 2);
-    vTaskDelay(pdMS_TO_TICKS(duracao_ms));
-    pwm_set_gpio_level(BUZZER_PIN, 0);
 }
 
 // Tarefa para controle da lógica do semáforo
